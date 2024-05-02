@@ -1,0 +1,47 @@
+services:
+  one-app:
+    build:
+      context: ./one-app
+      dockerfile: Dockerfile
+    volumes:
+      - ./volumes/one-app-dist:/build:rw
+    environment:
+      - "NODE_ENV=development"
+      - "PUBLIC_URL=/"
+  
+  another-app:
+    build:
+      context: ./another-app
+      dockerfile: Dockerfile
+    volumes:
+      - ./volumes/another-app-dist:/build:rw
+    environment:
+      - "NODE_ENV=development"
+      - "PUBLIC_URL=/webapp/"
+
+  nx-app:
+    build:
+      context: ./pnpm-monorepo
+      dockerfile: Dockerfile
+      target: nx-app
+      args:
+        - PUBLIC_URL=/nx-app/
+    volumes:
+      - ./volumes/nx-app-dist:/build:rw
+    environment:
+      - "NODE_ENV=development"
+      - "PUBLIC_URL=/nx-app/"
+
+  gateway:
+    image: nginx:1.19
+    ports:
+      - "7323:80"
+    volumes:
+      - ./volumes/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./volumes/one-app-dist:/etc/nginx/html/one-app:ro
+      - ./volumes/another-app-dist:/etc/nginx/html/another-app:ro
+      - ./volumes/nx-app-dist:/etc/nginx/html/nx-app:ro
+    depends_on:
+      - one-app
+      - another-app
+      - nx-app

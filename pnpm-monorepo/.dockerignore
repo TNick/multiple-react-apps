@@ -1,0 +1,17 @@
+.git
+.nx
+.vscode
+dist
+node_modules
+playground
+.editorconfig
+.eslintignore
+.eslintrc.json
+.gitignore
+.prettierignore
+.prettierrc
+jest.config.ts
+jest.pretest.js
+LICENSE
+README.md
+*.md
